@@ -140,7 +140,7 @@
 				xmlHttp.onreadystatechange = function() { 
 					if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
 						var jsonresp = JSON.parse(xmlHttp.responseText);
-						var measurement = jsonresp.measurements[0].smartarm_servos.measurement.middle_angle.value;
+						var measurement = jsonresp.measurements[0].smartarm_servos.middle_angle.value;
 						document.querySelector('a-scene').querySelector('#middle_position').setAttribute('value', measurement + ' %');
 					}
 				}
