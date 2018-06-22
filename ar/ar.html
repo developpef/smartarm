@@ -68,11 +68,23 @@
 			<!-- handle marker with hiro preset -->
 			<a-marker preset="custom" type='pattern' url='markers/M-marker.patt'>
 				<!--<a-image id="levelIndicator" src="#empty"  width="3" height="2" position="-2 2 0"></a-image>-->
-				<a-text value="Servo position" position="0 2.6 0" width="10" anchor="left" color="#00BFFF"></a-text>
+				<a-text value="Servo middle" position="0 2.6 0" width="10" anchor="left" color="#00BFFF"></a-text>
 				<a-text test-counter font="exo2bold" id="middle_position" value="0 %" position="0 2.1 0" width="15" anchor="left" color="#00BFFF"></a-text>
 				<!-- <a-image src="#recycle"  width="1" height="1" position="-1.5 -2 0"></a-image>
 				<a-text value="Next interv." position="-0.9 -1.6 0" width="10" anchor="left" color="#00BFFF"></a-text>
 				<a-text id="date" font="exo2bold" value="01 Jan 2018" position="-0.9 -2.4 0" width="20" anchor="left" color="#00BFFF"></a-text> -->
+			</a-marker>
+			<a-marker preset="custom" type='pattern' url='markers/R-marker.patt'>
+				<a-text value="Servo right" position="0 2.6 0" width="10" anchor="left" color="#00BFFF"></a-text>
+				<a-text test-counter font="exo2bold" id="right_position" value="0 %" position="0 2.1 0" width="15" anchor="left" color="#00BFFF"></a-text>
+			</a-marker>
+			<a-marker preset="custom" type='pattern' url='markers/L-marker.patt'>
+				<a-text value="Servo left" position="0 2.6 0" width="10" anchor="left" color="#00BFFF"></a-text>
+				<a-text test-counter font="exo2bold" id="left_position" value="0 %" position="0 2.1 0" width="15" anchor="left" color="#00BFFF"></a-text>
+			</a-marker>
+			<a-marker preset="custom" type='pattern' url='markers/C-marker.patt'>
+				<a-text value="Servo claw" position="0 2.6 0" width="10" anchor="left" color="#00BFFF"></a-text>
+				<a-text test-counter font="exo2bold" id="claw_position" value="0 %" position="0 2.1 0" width="15" anchor="left" color="#00BFFF"></a-text>
 			</a-marker>
 			<a-camera-static position rotation scale visible material camera>
 				<!--<a-cursor></a-cursor>-->
@@ -134,6 +146,7 @@
 				return day + ' ' + monthNames[monthIndex] + ' ' + year;
 			}
 			
+			// === INIT MIDDLE ===
 			(function(){
 				// init data
 				var xmlHttp = new XMLHttpRequest();
@@ -145,6 +158,54 @@
 					}
 				}
 				xmlHttp.open("GET", "https://pefgfi.cumulocity.com/measurement/measurements?source="+SERVO_MIDDLE_C8Y_ID+"&fromDate=2018-01-01&pageSize=1&dateTo=2020-01-01&revert=true", true); // true for asynchronous 
+				xmlHttp.setRequestHeader("Authorization", "Basic " + btoa("demo:demodemo"));
+				xmlHttp.send(null);
+			})();
+			
+			// === INIT LEFT ===
+			(function(){
+				// init data
+				var xmlHttp = new XMLHttpRequest();
+				xmlHttp.onreadystatechange = function() { 
+					if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+						var jsonresp = JSON.parse(xmlHttp.responseText);
+						var measurement = jsonresp.measurements[0].smartarm_servos.left_angle.value;
+						document.querySelector('a-scene').querySelector('#left_position').setAttribute('value', measurement + ' %');
+					}
+				}
+				xmlHttp.open("GET", "https://pefgfi.cumulocity.com/measurement/measurements?source="+SERVO_LEFT_C8Y_ID+"&fromDate=2018-01-01&pageSize=1&dateTo=2020-01-01&revert=true", true); // true for asynchronous 
+				xmlHttp.setRequestHeader("Authorization", "Basic " + btoa("demo:demodemo"));
+				xmlHttp.send(null);
+			})();
+			
+			// === INIT RIGHT ===
+			(function(){
+				// init data
+				var xmlHttp = new XMLHttpRequest();
+				xmlHttp.onreadystatechange = function() { 
+					if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+						var jsonresp = JSON.parse(xmlHttp.responseText);
+						var measurement = jsonresp.measurements[0].smartarm_servos.right_angle.value;
+						document.querySelector('a-scene').querySelector('#right_position').setAttribute('value', measurement + ' %');
+					}
+				}
+				xmlHttp.open("GET", "https://pefgfi.cumulocity.com/measurement/measurements?source="+SERVO_RIGHT_C8Y_ID+"&fromDate=2018-01-01&pageSize=1&dateTo=2020-01-01&revert=true", true); // true for asynchronous 
+				xmlHttp.setRequestHeader("Authorization", "Basic " + btoa("demo:demodemo"));
+				xmlHttp.send(null);
+			})();
+			
+			// === INIT CLAW ===
+			(function(){
+				// init data
+				var xmlHttp = new XMLHttpRequest();
+				xmlHttp.onreadystatechange = function() { 
+					if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+						var jsonresp = JSON.parse(xmlHttp.responseText);
+						var measurement = jsonresp.measurements[0].smartarm_servos.claw_angle.value;
+						document.querySelector('a-scene').querySelector('#claw_position').setAttribute('value', measurement + ' %');
+					}
+				}
+				xmlHttp.open("GET", "https://pefgfi.cumulocity.com/measurement/measurements?source="+SERVO_CLAW_C8Y_ID+"&fromDate=2018-01-01&pageSize=1&dateTo=2020-01-01&revert=true", true); // true for asynchronous 
 				xmlHttp.setRequestHeader("Authorization", "Basic " + btoa("demo:demodemo"));
 				xmlHttp.send(null);
 			})();
