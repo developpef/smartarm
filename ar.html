@@ -1,0 +1,179 @@
+<html>
+	<head>
+		<title>ARjs SmartCan by GFI</title>
+		<script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+		<script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
+		<script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
+		<script>
+			/*AFRAME.registerComponent('cursor-listener', {
+			  init: function () {
+				this.el.addEventListener('click', function (evt) {
+				  // alert('click');
+				});
+			  }
+			});
+			// https://stackoverflow.com/questions/47032056/gltf-cursor-listener-click-event-in-a-frame
+			AFRAME.registerComponent('raycaster-autorefresh', {
+			  init: function () {
+				var el = this.el;
+				this.el.addEventListener('model-loaded', function () {
+				  var cursorEl = el.querySelector('[raycaster]');
+				  cursorEl.components.raycaster.refreshObjects();
+				});
+			  }
+			});*/
+			
+			 function sendTextMessage(text) {
+				if (socket.readyState != WebSocket.OPEN) return;
+				socket.send(text);
+			 }
+			 
+			 function connectWS() {
+				 if(!sentHandshake) {
+					 sendTextMessage(JSON.stringify([{"channel":"/meta/handshake","ext":{"com.cumulocity.authn":{"token":"dGVzdHNfcnVubmVyOnRlc3RzX3J1bm5lcg=="}}, "version":"1.0","mininumVersion":"1.0beta","supportedConnectionTypes":["websocket","long-polling","callback-polling"],"advice":{"timeout":120000,"interval":30000}}]));
+					 sentHandshake=true;
+				 } else if (!sentSubscription) {
+					sendTextMessage(JSON.stringify([
+					  {
+						"channel": "/meta/subscribe",
+						"clientId": clientId,
+						"subscription": "/measurements/62488"  //62488 = id C8Y poubelle intelligente
+					  }
+					]));
+					sentSubscription = true;
+				 } else if (!sentConnect) {
+					sendTextMessage(JSON.stringify([
+					  {
+						"channel": "/meta/connect",
+						"clientId": clientId,
+						"connectionType": "websocket",
+						"advice":{"timeout":1200000,"interval":30000}
+					  }
+					]));
+					sentConnect = true;
+				 }
+			 }
+		</script>
+	</head>
+
+	<body style='margin : 0px; overflow: hidden;'>
+		<a-scene arjs="debugUIEnabled: false;">
+			<a-assets>
+				
+			</a-assets>
+			<!-- handle marker with hiro preset -->
+			<a-marker preset="custom" type='pattern' url='markers/M-marker.patt'>
+				<!--<a-image id="levelIndicator" src="#empty"  width="3" height="2" position="-2 2 0"></a-image>-->
+				<a-text value="Fill level" position="0 2.6 0" width="10" anchor="left" color="#00BFFF"></a-text>
+				<a-text test-counter font="exo2bold" id="fillLevel" value="0 %" position="0 2.1 0" width="15" anchor="left" color="#00BFFF"></a-text>
+				<a-image src="#recycle"  width="1" height="1" position="-1.5 -2 0"></a-image>
+				<a-text value="Next interv." position="-0.9 -1.6 0" width="10" anchor="left" color="#00BFFF"></a-text>
+				<a-text id="date" font="exo2bold" value="01 Jan 2018" position="-0.9 -2.4 0" width="20" anchor="left" color="#00BFFF"></a-text>
+			</a-marker>
+			<a-camera-static position rotation scale visible material camera>
+				<!--<a-cursor></a-cursor>-->
+			</a-camera-static>
+			<a-entity light="type: ambient; color: #FFF; intensity: 5;"></a-entity>
+		</a-scene>
+		<script>
+			var sentHandshake = false;
+			var sentSubscription = false;
+			var sentConnect = false;
+			var clientId = '';
+
+			var host = "wss://pefgfi.cumulocity.com/cep/realtime";
+			try {
+				socket = new WebSocket(host);
+
+				socket.onopen = function (openEvent) {
+					connectWS();
+				};
+
+				socket.onmessage = function (messageEvent) {
+					if (messageEvent.data instanceof Blob) {
+						//
+					} else {
+						var data = JSON.parse(messageEvent.data)[0];
+						if(!sentSubscription && data.successful) {
+							clientId = data.clientId;
+							connectWS();
+						} else if(!sentConnect && data.successful) {
+							connectWS();
+						} else {
+							// read data
+							var measurement = data.data.data.pef_SmartCanMeasurement;
+							//
+							var remplissage = measurement.remplissage.value;
+							document.querySelector('a-scene').querySelector('#fillLevel').setAttribute('value', remplissage + ' %');
+							//
+							var daysCount = getDaysCount(remplissage);
+							//
+							if(daysCount==0) {
+								document.querySelector('a-scene').querySelector('#date').setAttribute('value', 'today');
+							} else {
+								document.querySelector('a-scene').querySelector('#date').setAttribute('value', getDate(daysCount));
+							}
+						}
+					}
+				 };
+
+				socket.onerror = function (errorEvent) {
+					alert('WebSocket Status:: Error was reported');
+				};
+
+				socket.onclose = function (closeEvent) {
+					alert('WebSocket Status:: Socket Closed');
+				};
+			} catch (exception) { if (window.console) console.log(exception); }
+			
+			function getDaysCount(remplissage) {
+				var daysCount = 0;
+				if(remplissage > 5 && remplissage < 15) {
+					daysCount = 10;
+				} else if(remplissage > 15 && remplissage < 45) {
+					daysCount = 5;
+				} else if(remplissage > 45 && remplissage < 75) {
+					daysCount = 2;
+				}
+				return daysCount;
+			}
+			
+			function getDate(daysOffset) {
+				var monthNames = [
+					"Jan", "Fev", "Mar",
+					"Avr", "Mai", "Juin", "Juil",
+					"Aout", "Sept", "Oct",
+					"Nov", "Dec"
+				  ];
+				var date = new Date();
+				var day = date.getDate() + daysOffset;
+				var monthIndex = date.getMonth();
+				var year = date.getFullYear();
+				return day + ' ' + monthNames[monthIndex] + ' ' + year;
+			}
+			
+			(function(){
+				// init data
+				var xmlHttp = new XMLHttpRequest();
+				xmlHttp.onreadystatechange = function() { 
+					if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+						var jsonresp = JSON.parse(xmlHttp.responseText);
+						var measurement = jsonresp.measurements[0].pef_SmartCanMeasurement;
+						var remplissage = measurement.remplissage.value;
+						document.querySelector('a-scene').querySelector('#fillLevel').setAttribute('value', remplissage + ' %');
+						//
+						var daysCount = getDaysCount(remplissage);
+						if(daysCount==0) {
+							document.querySelector('a-scene').querySelector('#date').setAttribute('value', 'today');
+						} else {
+							document.querySelector('a-scene').querySelector('#date').setAttribute('value', getDate(daysCount));
+						}
+					}
+				}
+				xmlHttp.open("GET", "https://pefgfi.cumulocity.com/measurement/measurements?source=62488&fromDate=2018-01-01&pageSize=1&dateTo=2020-01-01&revert=true", true); // true for asynchronous 
+				xmlHttp.setRequestHeader("Authorization", "Basic " + btoa("demo:demodemo"));
+				xmlHttp.send(null);
+			})();
+		</script>
+	</body>
+</html>
