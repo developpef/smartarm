@@ -26,37 +26,6 @@
 				});
 			  }
 			});*/
-			
-			 function sendTextMessage(text) {
-				if (socket.readyState != WebSocket.OPEN) return;
-				socket.send(text);
-			 }
-			 
-			 function connectWS() {
-				 if(!sentHandshake) {
-					 sendTextMessage(JSON.stringify([{"channel":"/meta/handshake","ext":{"com.cumulocity.authn":{"token":"dGVzdHNfcnVubmVyOnRlc3RzX3J1bm5lcg=="}}, "version":"1.0","mininumVersion":"1.0beta","supportedConnectionTypes":["websocket","long-polling","callback-polling"],"advice":{"timeout":120000,"interval":30000}}]));
-					 sentHandshake=true;
-				 } else if (!sentSubscription) {
-					sendTextMessage(JSON.stringify([
-					  {
-						"channel": "/meta/subscribe",
-						"clientId": clientId,
-						"subscription": "/measurements/"+SERVO_MIDDLE_C8Y_ID
-					  }
-					]));
-					sentSubscription = true;
-				 } else if (!sentConnect) {
-					sendTextMessage(JSON.stringify([
-					  {
-						"channel": "/meta/connect",
-						"clientId": clientId,
-						"connectionType": "websocket",
-						"advice":{"timeout":1200000,"interval":30000}
-					  }
-					]));
-					sentConnect = true;
-				 }
-			 }
 		</script>
 	</head>
 
@@ -110,8 +79,25 @@
 						} else if(!sentConnect && data.successful) {
 							connectWS();
 						} else {
-							document.querySelector('a-scene').querySelector('#middle_position')
-								.setAttribute('value', data.data.data.smartarm_servos.middle_angle.value + ' %');
+							if(data.data.data.smartarm_servos) {
+								var content = data.data.data.smartarm_servos;
+								if(content.middle_angle) {
+									document.querySelector('a-scene').querySelector('#middle_position')
+										.setAttribute('value', content.middle_angle.value + ' %');
+								}
+								if(content.left_angle) {
+									document.querySelector('a-scene').querySelector('#left_position')
+										.setAttribute('value', content.left_angle.value + ' %');
+								}
+								if(content.right_angle) {
+									document.querySelector('a-scene').querySelector('#right_position')
+										.setAttribute('value', content.right_angle.value + ' %');
+								}
+								if(content.claw_angle) {
+									document.querySelector('a-scene').querySelector('#claw_position')
+										.setAttribute('value', content.claw_angle.value + ' %');
+								}
+							}
 						}
 					}
 				 };
@@ -124,6 +110,37 @@
 					alert('WebSocket Status:: Socket Closed');
 				};
 			} catch (exception) { if (window.console) console.log(exception); }
+			
+			function sendTextMessage(text) {
+				if (socket.readyState != WebSocket.OPEN) return;
+				socket.send(text);
+			}
+
+			function connectWS() {
+			 if(!sentHandshake) {
+				 sendTextMessage(JSON.stringify([{"channel":"/meta/handshake","ext":{"com.cumulocity.authn":{"token":"dGVzdHNfcnVubmVyOnRlc3RzX3J1bm5lcg=="}}, "version":"1.0","mininumVersion":"1.0beta","supportedConnectionTypes":["websocket","long-polling","callback-polling"],"advice":{"timeout":120000,"interval":30000}}]));
+				 sentHandshake=true;
+			 } else if (!sentSubscription) {
+				sendTextMessage(JSON.stringify([
+				  {
+					"channel": "/meta/subscribe",
+					"clientId": clientId,
+					"subscription": "/measurements/*"
+				  }
+				]));
+				sentSubscription = true;
+			 } else if (!sentConnect) {
+				sendTextMessage(JSON.stringify([
+				  {
+					"channel": "/meta/connect",
+					"clientId": clientId,
+					"connectionType": "websocket",
+					"advice":{"timeout":1200000,"interval":30000}
+				  }
+				]));
+				sentConnect = true;
+			 }
+			}
 			
 			
 			function getDate(daysOffset) {
