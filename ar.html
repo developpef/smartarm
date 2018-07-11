@@ -9,23 +9,6 @@
 			var SERVO_LEFT_C8Y_ID = 68638;
 			var SERVO_RIGHT_C8Y_ID = 68641;
 			var SERVO_CLAW_C8Y_ID = 69213;
-			/*AFRAME.registerComponent('cursor-listener', {
-			  init: function () {
-				this.el.addEventListener('click', function (evt) {
-				  // alert('click');
-				});
-			  }
-			});
-			// https://stackoverflow.com/questions/47032056/gltf-cursor-listener-click-event-in-a-frame
-			AFRAME.registerComponent('raycaster-autorefresh', {
-			  init: function () {
-				var el = this.el;
-				this.el.addEventListener('model-loaded', function () {
-				  var cursorEl = el.querySelector('[raycaster]');
-				  cursorEl.components.raycaster.refreshObjects();
-				});
-			  }
-			});*/
 		</script>
 	</head>
 
@@ -34,20 +17,20 @@
 			<a-assets>
 			</a-assets>
 			<a-marker preset="custom" type='pattern' url='markers/M-marker.patt'>
-				<a-text geometry="primitive: plane; width: 5; height: auto;" material="color: #eee" value="Servo middle" position="0 2.6 0" align="center" anchor="center" width="20" color="#00BFFF"></a-text>
-				<a-text geometry="primitive: plane; width: 5; height: auto;" material="color: #eee" font="exo2bold" id="middle_position" value="0 %" position="0 1.8 0" align="center" anchor="center" width="25" color="#00BFFF"></a-text>
+				<a-text geometry="primitive: plane; width: 7; height: auto;" material="color: #eee" value="Servo middle" position="0 2.6 0" align="center" anchor="center" width="20" color="#00BFFF"></a-text>
+				<a-text geometry="primitive: plane; width: 7; height: auto;" material="color: #eee" font="exo2bold" id="middle_position" value="0 %" position="0 1.8 0" align="center" anchor="center" width="25" color="#00BFFF"></a-text>
 			</a-marker>
 			<a-marker preset="custom" type='pattern' url='markers/L-marker.patt'>
-				<a-text value="Servo left" position="0 2.6 0" width="10" anchor="left" color="#00BFFF"></a-text>
-				<a-text font="exo2bold" id="left_position" value="0 %" position="0 2.1 0" width="15" anchor="left" color="#00BFFF"></a-text>
+				<a-text geometry="primitive: plane; width: 7; height: auto;" material="color: #eee" value="Servo left" position="0 2.6 0" align="center" anchor="center" width="20" color="#00BFFF"></a-text>
+				<a-text geometry="primitive: plane; width: 7; height: auto;" material="color: #eee" font="exo2bold" id="left_position" value="0 %" position="0 1.8 0" align="center" anchor="center" width="25" color="#00BFFF"></a-text>
 			</a-marker>
 			<a-marker preset="custom" type='pattern' url='markers/R-marker.patt'>
-				<a-text value="Servo right" position="0 2.6 0" width="10" anchor="left" color="#00BFFF"></a-text>
-				<a-text font="exo2bold" id="right_position" value="0 %" position="0 2.1 0" width="15" anchor="left" color="#00BFFF"></a-text>
+				<a-text geometry="primitive: plane; width: 7; height: auto;" material="color: #eee" value="Servo right" position="0 2.6 0" align="center" anchor="center" width="20" color="#00BFFF"></a-text>
+				<a-text geometry="primitive: plane; width: 7; height: auto;" material="color: #eee" font="exo2bold" id="right_position" value="0 %" position="0 1.8 0" align="center" anchor="center" width="25" color="#00BFFF"></a-text>
 			</a-marker>
 			<a-marker preset='custom' type='pattern' url='markers/C-marker.patt'>
-				<a-text value="Servo claw" position="0 2.6 0" width="10" anchor="left" color="#00BFFF"></a-text>
-				<a-text font="exo2bold" id="claw_position" value="0 %" position="0 2.1 0" width="15" anchor="left" color="#00BFFF"></a-text>
+				<a-text geometry="primitive: plane; width: 7; height: auto;" material="color: #eee" value="Servo claw" position="0 2.6 0" align="center" anchor="center" width="20" color="#00BFFF"></a-text>
+				<a-text geometry="primitive: plane; width: 7; height: auto;" material="color: #eee" font="exo2bold" id="claw_position" value="0 %" position="0 1.8 0" align="center" anchor="center" width="25" color="#00BFFF"></a-text>
 			</a-marker>
 			<a-camera-static position rotation scale visible material camera>
 				<!--<a-cursor></a-cursor>-->
