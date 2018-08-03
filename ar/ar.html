@@ -69,19 +69,7 @@
 							connectWS();
 						} else {
 							if(data.data.data.smartarm_servos) {
-								var content = data.data.data.smartarm_servos;
-								if (content.middle_angle) {
-									displayServoPosition(content.middle_angle.value,'middle');
-								}
-								if (content.left_angle) {
-									displayServoPosition(content.left_angle.value,'left');
-								}
-								if (content.right_angle) {
-									displayServoPosition(content.right_angle.value,'right');
-								}
-								if (content.claw_angle) {
-									displayServoPosition(content.claw_angle.value,'claw');
-								}
+								displayServoPosition(data.data.data.smartarm_servos);
 							}
 						}
 					}
@@ -142,7 +130,26 @@
 				return day + ' ' + monthNames[monthIndex] + ' ' + year;
 			}
 			
-			function displayServoPosition(position, name) {
+			function displayServoPosition(measurement) {
+				var position = 0;
+				var name = '';
+				if (measurement.middle_angle) {
+					position = measurement.middle_angle.value;
+					name = 'middle';
+				}
+				if (measurement.left_angle) {
+					position = measurement.left_angle.value;
+					name = 'left';
+				}
+				if (measurement.right_angle) {
+					position = measurement.right_angle.value;
+					name = 'right';
+				}
+				if (measurement.claw_angle) {
+					position = measurement.claw_angle.value;
+					name = 'claw';
+				}
+				//
 				document.querySelector('a-scene').querySelector('#'+name+'_position')
 					.setAttribute('value', position + ' %');
 				if (position >= 90) {
@@ -163,8 +170,7 @@
 				xmlHttp.onreadystatechange = function() { 
 					if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
 						var jsonresp = JSON.parse(xmlHttp.responseText);
-						var measurement = jsonresp.measurements[0].smartarm_servos.claw_angle.value;
-						displayServoPosition(measurement, name);
+						displayServoPosition(jsonresp.measurements[0].smartarm_servos);
 					}
 				}
 				xmlHttp.open("GET", "https://pefgfi.cumulocity.com/measurement/measurements?source="+servoC8YId+"&fromDate=2018-01-01&pageSize=1&dateTo=2020-01-01&revert=true", true); // true for asynchronous 
