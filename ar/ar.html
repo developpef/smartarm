@@ -16,26 +16,27 @@
 		<a-scene arjs="debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
 			<a-assets>
 				<img id="popup" src="img/popup.png"/>
+				<img id="popup_warn" src="img/popup_warn.png"/>
 			</a-assets>
 			<a-marker preset="custom" type='pattern' url='markers/M-marker.patt'>
 				<a-text value="Servo middle" position="0 4 0" align="center" anchor="center" width="20" color="#00BFFF"></a-text>
 				<a-text font="exo2bold" id="middle_position" value="0 %" position="0 3 0" align="center" anchor="center" width="25" color="#00BFFF"></a-text>
-				<a-image src="#popup"  width="10" height="5" position="0 2.5 -0.5"></a-image>
+				<a-image id="middle_popup" src="#popup"  width="10" height="5" position="0 2.5 -0.5"></a-image>
 			</a-marker>
 			<a-marker preset="custom" type='pattern' url='markers/L-marker.patt'>
 				<a-text value="Servo left" position="0 4 0" align="center" anchor="center" width="20" color="#00BFFF"></a-text>
 				<a-text font="exo2bold" id="left_position" value="0 %" position="0 3 0" align="center" anchor="center" width="25" color="#00BFFF"></a-text>
-				<a-image src="#popup"  width="10" height="5" position="0 2.5 -0.5"></a-image>
+				<a-image id="left_popup" src="#popup"  width="10" height="5" position="0 2.5 -0.5"></a-image>
 			</a-marker>
 			<a-marker preset="custom" type='pattern' url='markers/R-marker.patt'>
 				<a-text value="Servo right" position="0 4 0" align="center" anchor="center" width="20" color="#00BFFF"></a-text>
 				<a-text font="exo2bold" id="right_position" value="0 %" position="0 3 0" align="center" anchor="center" width="25" color="#00BFFF"></a-text>
-				<a-image src="#popup"  width="10" height="5" position="0 2.5 -0.5"></a-image>
+				<a-image id="right_popup" src="#popup"  width="10" height="5" position="0 2.5 -0.5"></a-image>
 			</a-marker>
 			<a-marker preset='custom' type='pattern' url='markers/C-marker.patt'>
 				<a-text value="Servo claw" position="0 4 0" align="center" anchor="center" width="20" color="#00BFFF"></a-text>
 				<a-text font="exo2bold" id="claw_position" value="0 %" position="0 3 0" align="center" anchor="center" width="25" color="#00BFFF"></a-text>
-				<a-image src="#popup"  width="10" height="5" position="0 2.5 -0.5"></a-image>
+				<a-image id="claw_popup" src="#popup"  width="10" height="5" position="0 2.5 -0.5"></a-image>
 			</a-marker>
 			<a-camera-static position rotation scale visible material camera>
 				<!--<a-cursor></a-cursor>-->
@@ -69,21 +70,17 @@
 						} else {
 							if(data.data.data.smartarm_servos) {
 								var content = data.data.data.smartarm_servos;
-								if(content.middle_angle) {
-									document.querySelector('a-scene').querySelector('#middle_position')
-										.setAttribute('value', content.middle_angle.value + ' %');
+								if (content.middle_angle) {
+									displayServoPosition(content.middle_angle.value,'middle');
 								}
-								if(content.left_angle) {
-									document.querySelector('a-scene').querySelector('#left_position')
-										.setAttribute('value', content.left_angle.value + ' %');
+								if (content.left_angle) {
+									displayServoPosition(content.left_angle.value,'left');
 								}
-								if(content.right_angle) {
-									document.querySelector('a-scene').querySelector('#right_position')
-										.setAttribute('value', content.right_angle.value + ' %');
+								if (content.right_angle) {
+									displayServoPosition(content.right_angle.value,'right');
 								}
-								if(content.claw_angle) {
-									document.querySelector('a-scene').querySelector('#claw_position')
-										.setAttribute('value', content.claw_angle.value + ' %');
+								if (content.claw_angle) {
+									displayServoPosition(content.claw_angle.value,'claw');
 								}
 							}
 						}
@@ -145,68 +142,42 @@
 				return day + ' ' + monthNames[monthIndex] + ' ' + year;
 			}
 			
-			// === INIT MIDDLE ===
-			(function(){
-				// init data
-				var xmlHttp = new XMLHttpRequest();
-				xmlHttp.onreadystatechange = function() { 
-					if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-						var jsonresp = JSON.parse(xmlHttp.responseText);
-						var measurement = jsonresp.measurements[0].smartarm_servos.middle_angle.value;
-						document.querySelector('a-scene').querySelector('#middle_position').setAttribute('value', measurement + ' %');
-					}
+			function displayServoPosition(position, name) {
+				document.querySelector('a-scene').querySelector('#'+name+'_position')
+					.setAttribute('value', position + ' %');
+				if (position >= 90) {
+					document.querySelector('a-scene').querySelector('#'+name+'_popup')
+						.setAttribute('src', '#popup_warn');
+				} else {
+					document.querySelector('a-scene').querySelector('#'+name+'_popup')
+						.setAttribute('src', '#popup');
 				}
-				xmlHttp.open("GET", "https://pefgfi.cumulocity.com/measurement/measurements?source="+SERVO_MIDDLE_C8Y_ID+"&fromDate=2018-01-01&pageSize=1&dateTo=2020-01-01&revert=true", true); // true for asynchronous 
-				xmlHttp.setRequestHeader("Authorization", "Basic " + btoa("demo:demodemo"));
-				xmlHttp.send(null);
-			})();
+			}
 			
-			// === INIT LEFT ===
-			(function(){
-				// init data
-				var xmlHttp = new XMLHttpRequest();
-				xmlHttp.onreadystatechange = function() { 
-					if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-						var jsonresp = JSON.parse(xmlHttp.responseText);
-						var measurement = jsonresp.measurements[0].smartarm_servos.left_angle.value;
-						document.querySelector('a-scene').querySelector('#left_position').setAttribute('value', measurement + ' %');
-					}
-				}
-				xmlHttp.open("GET", "https://pefgfi.cumulocity.com/measurement/measurements?source="+SERVO_LEFT_C8Y_ID+"&fromDate=2018-01-01&pageSize=1&dateTo=2020-01-01&revert=true", true); // true for asynchronous 
-				xmlHttp.setRequestHeader("Authorization", "Basic " + btoa("demo:demodemo"));
-				xmlHttp.send(null);
-			})();
-			
-			// === INIT RIGHT ===
-			(function(){
-				// init data
-				var xmlHttp = new XMLHttpRequest();
-				xmlHttp.onreadystatechange = function() { 
-					if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-						var jsonresp = JSON.parse(xmlHttp.responseText);
-						var measurement = jsonresp.measurements[0].smartarm_servos.right_angle.value;
-						document.querySelector('a-scene').querySelector('#right_position').setAttribute('value', measurement + ' %');
-					}
-				}
-				xmlHttp.open("GET", "https://pefgfi.cumulocity.com/measurement/measurements?source="+SERVO_RIGHT_C8Y_ID+"&fromDate=2018-01-01&pageSize=1&dateTo=2020-01-01&revert=true", true); // true for asynchronous 
-				xmlHttp.setRequestHeader("Authorization", "Basic " + btoa("demo:demodemo"));
-				xmlHttp.send(null);
-			})();
-			
-			// === INIT CLAW ===
-			(function(){
+			/**
+			* name = 'left', 'right', 'claw', 'middle'
+			*/
+			function requestDataForServo(name, servoC8YId){
 				// init data
 				var xmlHttp = new XMLHttpRequest();
 				xmlHttp.onreadystatechange = function() { 
 					if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
 						var jsonresp = JSON.parse(xmlHttp.responseText);
 						var measurement = jsonresp.measurements[0].smartarm_servos.claw_angle.value;
-						document.querySelector('a-scene').querySelector('#claw_position').setAttribute('value', measurement + ' %');
+						displayServoPosition(measurement, name);
 					}
 				}
-				xmlHttp.open("GET", "https://pefgfi.cumulocity.com/measurement/measurements?source="+SERVO_CLAW_C8Y_ID+"&fromDate=2018-01-01&pageSize=1&dateTo=2020-01-01&revert=true", true); // true for asynchronous 
+				xmlHttp.open("GET", "https://pefgfi.cumulocity.com/measurement/measurements?source="+servoC8YId+"&fromDate=2018-01-01&pageSize=1&dateTo=2020-01-01&revert=true", true); // true for asynchronous 
 				xmlHttp.setRequestHeader("Authorization", "Basic " + btoa("demo:demodemo"));
 				xmlHttp.send(null);
+			}
+			
+			// === INIT STATES ===
+			(function(){
+				requestDataForServo('middle',SERVO_MIDDLE_C8Y_ID);
+				requestDataForServo('left',SERVO_LEFT_C8Y_ID);
+				requestDataForServo('right',SERVO_RIGHT_C8Y_ID);
+				requestDataForServo('claw',SERVO_CLAW_C8Y_ID);
 			})();
 			
 		</script>
