@@ -24,7 +24,7 @@
 				<a-text font="exo2bold" id="middle_position" value="0 %" position="2.3 3.9 0" align="center" anchor="center" width="13" color="#0095e1"></a-text>
 				<a-image id="middle_popup" src="#popup2"  width="10" height="5" position="0 2.5 -0.5"></a-image>
 				<a-entity position="0 0 0" width="2">
-					<a-entity id="threeDmotor" gltf-model="url(./3d/scene.gltf);" scale="0.2 0.2 0.2" cursor-listener></a-entity>
+					<a-entity id="threeDmotor" gltf-model="url(./3d/scene.gltf);" scale="0.1 0.1 0.1" cursor-listener></a-entity>
 					<a-animation attribute="rotation"
 					   dur="4000"
 					   fill="forwards"
@@ -50,7 +50,7 @@
 			<a-camera-static position rotation scale visible material camera>
 				<!--<a-cursor></a-cursor>-->
 			</a-camera-static>
-			<a-entity light="type: ambient; color: #FFF; intensity: 5;"></a-entity>
+			<a-entity light="type: ambient; color: #FFF; intensity: 3;"></a-entity>
 		</a-scene>
 		<script>
 			var sentHandshake = false;
