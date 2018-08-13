@@ -20,11 +20,11 @@
 				<img id="popup_warn" src="img/popup_warn.png"/>
 			</a-assets>
 			<a-marker preset="custom" type='pattern' url='markers/M-marker.patt'>
-				<a-text value="Servo middle" position="0 4.5 0" align="center" anchor="center" width="20" color="#00BFFF"></a-text>
-				<a-text font="exo2bold" id="middle_position" value="0 %" position="2.3 3.6 0" align="center" anchor="center" width="10" color="#00BFFF"></a-text>
+				<a-text value="Servo middle" position="0 4.5 0" align="center" anchor="center" width="20" color="#0095e1"></a-text>
+				<a-text font="exo2bold" id="middle_position" value="0 %" position="2.3 4 0" align="center" anchor="center" width="13" color="#0095e1"></a-text>
 				<a-image id="middle_popup" src="#popup2"  width="10" height="5" position="0 2.5 -0.5"></a-image>
 				<a-entity position="0 3 0">
-					<a-entity id="threeDmotor" gltf-model="url(3d/scene.gltf);" position="0 0 0" cursor-listener></a-entity>
+					<a-entity id="threeDmotor" gltf-model="url(./3d/scene.gltf);" position="0 0 0" cursor-listener></a-entity>
 					<a-animation attribute="rotation"
 					   dur="4000"
 					   fill="forwards"
@@ -33,18 +33,18 @@
 				</a-entity>
 			</a-marker>
 			<a-marker preset="custom" type='pattern' url='markers/L-marker.patt'>
-				<a-text value="Servo left" position="0 4 0" align="center" anchor="center" width="20" color="#00BFFF"></a-text>
-				<a-text font="exo2bold" id="left_position" value="0 %" position="0 3 0" align="center" anchor="center" width="25" color="#00BFFF"></a-text>
+				<a-text value="Servo left" position="0 4 0" align="center" anchor="center" width="20" color="#0095e1"></a-text>
+				<a-text font="exo2bold" id="left_position" value="0 %" position="0 3 0" align="center" anchor="center" width="25" color="#0095e1"></a-text>
 				<a-image id="left_popup" src="#popup"  width="10" height="5" position="0 2.5 -0.5"></a-image>
 			</a-marker>
 			<a-marker preset="custom" type='pattern' url='markers/R-marker.patt'>
-				<a-text value="Servo right" position="0 4 0" align="center" anchor="center" width="20" color="#00BFFF"></a-text>
-				<a-text font="exo2bold" id="right_position" value="0 %" position="0 3 0" align="center" anchor="center" width="25" color="#00BFFF"></a-text>
+				<a-text value="Servo right" position="0 4 0" align="center" anchor="center" width="20" color="#0095e1"></a-text>
+				<a-text font="exo2bold" id="right_position" value="0 %" position="0 3 0" align="center" anchor="center" width="25" color="#0095e1"></a-text>
 				<a-image id="right_popup" src="#popup"  width="10" height="5" position="0 2.5 -0.5"></a-image>
 			</a-marker>
 			<a-marker preset='custom' type='pattern' url='markers/C-marker.patt'>
-				<a-text value="Servo claw" position="0 4 0" align="center" anchor="center" width="20" color="#00BFFF"></a-text>
-				<a-text font="exo2bold" id="claw_position" value="0 %" position="0 3 0" align="center" anchor="center" width="25" color="#00BFFF"></a-text>
+				<a-text value="Servo claw" position="0 4 0" align="center" anchor="center" width="20" color="#0095e1"></a-text>
+				<a-text font="exo2bold" id="claw_position" value="0 %" position="0 3 0" align="center" anchor="center" width="25" color="#0095e1"></a-text>
 				<a-image id="claw_popup" src="#popup"  width="10" height="5" position="0 2.5 -0.5"></a-image>
 			</a-marker>
 			<a-camera-static position rotation scale visible material camera>
