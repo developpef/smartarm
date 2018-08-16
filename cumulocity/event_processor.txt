@@ -1,0 +1,16 @@
+create expression String getStatusFromClawPosition(position) [
+    var texte = "none";
+    if (position >= 90) {
+      texte = "inline";
+    }
+    texte;
+];
+
+insert into UpdateManagedObject
+select
+  "69082" as id,
+  {
+    "c8y_Software.name", getStatusFromClawPosition(getNumber(event.measurement, "smartarm_servos.claw_angle.value"))
+  } as fragments
+from MeasurementCreated event
+where event.measurement.source.value = "69213";
