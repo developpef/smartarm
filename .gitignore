@@ -1,2 +1,4 @@
 ar/node_modules
 ar/package-lock.json
+*.tar
+*.zip

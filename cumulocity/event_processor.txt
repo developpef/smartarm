@@ -13,4 +13,7 @@ select
     "c8y_Software.name", getStatusFromClawPosition(getNumber(event.measurement, "smartarm_servos.claw_angle.value"))
   } as fragments
 from MeasurementCreated event
-where event.measurement.source.value = "69213";
+where event.measurement.source.value = "69213"
+or event.measurement.source.value = "69201"
+or event.measurement.source.value = "68641"
+or event.measurement.source.value = "68638";
