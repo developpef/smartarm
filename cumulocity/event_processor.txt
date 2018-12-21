@@ -8,12 +8,12 @@ create expression String getStatusFromClawPosition(position) [
 
 insert into UpdateManagedObject
 select
-  "69082" as id,
+  "133387" as id,
   {
     "c8y_Software.name", getStatusFromClawPosition(getNumber(event.measurement, "smartarm_servos.claw_angle.value"))
   } as fragments
 from MeasurementCreated event
-where event.measurement.source.value = "69213"
-or event.measurement.source.value = "69201"
-or event.measurement.source.value = "68641"
-or event.measurement.source.value = "68638";
+where event.measurement.source.value = "133388"
+or event.measurement.source.value = "134095"
+or event.measurement.source.value = "134104"
+or event.measurement.source.value = "134108";
