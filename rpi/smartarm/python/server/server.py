@@ -138,7 +138,7 @@ if __name__ == "__main__":
     server.start()
     print("Available loggers are: ", logging.Logger.manager.loggerDict.keys())
     try:
-         os.system('sudo /home/pi/PiBits/ServoBlaster/user/servod –-idle-timeout=2000 --p1pins=40,36,38,32,0,0,0,0') #This line is sent to command line to start the servo controller
+         os.system('sudo /home/pi/PiBits/ServoBlaster/user/servod –-idle-timeout=2000') #This line is sent to command line to start the servo controller
          while True:
              time.sleep(1)
 #            myvar.set_value(count)

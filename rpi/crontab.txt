@@ -1,0 +1,2 @@
+@reboot sh /home/pi/Desktop/smartarm/python/server/launcher.sh >/home/pi/Deskto$
+@reboot su pi -c 'sh /home/pi/runAgent.sh'
